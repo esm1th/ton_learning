@@ -1,0 +1,37 @@
+{
+  "name": "my_first_contract",
+  "version": "1.0.0",
+  "license": "MIT",
+  "devDependencies": {
+    "@swc/core": "^1.12.9",
+    "@ton-community/func-js": "^0.10.0",
+    "@ton/blueprint": "^0.38.0",
+    "@ton/core": "^0.61.0",
+    "@ton/crypto": "^3.3.0",
+    "@ton/sandbox": "^0.34.0",
+    "@ton/test-utils": "^0.8.0",
+    "@ton/ton": "^15.3.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.0.10",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@types/qs": "^6.14.0",
+    "jest": "^30.0.4",
+    "qrcode-terminal": "^0.12.0",
+    "qs": "^6.14.0",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "compile": "ts-node ./scripts/compile.ts",
+    "test": "yarn compile && yarn jest",
+    "onchaintest": "TESTNET=true ts-node ./tests/onchain.ts",
+    "onchaintest:mainnet": "ts-node ./tests/onchain.ts",
+    "deploy": "yarn compile && TESTNET=true ts-node ./scripts/deploy.ts",
+    "deploy:mainnet": "yarn compile && ts-node ./scripts/deploy.ts"
+  },
+  "dependencies": {
+    "@orbs-network/ton-access": "^2.3.3",
+    "dotenv": "^17.1.0"
+  }
+}
