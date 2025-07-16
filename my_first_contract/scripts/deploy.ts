@@ -1,56 +1,21 @@
-import { hex } from "../build/main.compile.json";
 import {
-  beginCell,
-  contractAddress,
-  Cell,
-  StateInit,
-  storeStateInit,
+  address,
   toNano,
 } from "@ton/ton";
-import qs from "qs";
-import qrcode from "qrcode-terminal";
-import dotenv from "dotenv";
+import { MainContract } from "../wrappers/MainContract";
+import { compile, NetworkProvider } from "@ton/blueprint";
 
-dotenv.config();
-
-async function deployScript() {
-  console.log("Deploying contract...");
-
-  const isTestnet = process.env.TESTNET == "true";
-  const codeCell = Cell.fromBoc(Buffer.from(hex, "hex"))[0];
-  const dataCell = new Cell();
-
-  const stateInit: StateInit = {
-    code: codeCell,
-    data: dataCell,
-  };
-
-  const stateInitBuilder = beginCell();
-  const stateInitWriter = storeStateInit(stateInit)(stateInitBuilder);
-  const stateInitCell = stateInitBuilder.endCell();
-
-  const address = contractAddress(0, {
-    code: codeCell,
-    data: dataCell,
-  });
-
-  console.log(`Contract address: ${address.toString({ testOnly: isTestnet })}`);
-
-  const tonkeeperDeploymentLink =
-    "ton://transfer/" +
-    address.toString({ testOnly: isTestnet }) +
-    "?" +
-    qs.stringify({
-      text: "Deploy contract",
-      amount: toNano(1).toString(10),
-      init: stateInitCell.toBoc({ idx: false }).toString("base64"),
-    });
-
-  console.log(`Tonkeeper deployment link: ${tonkeeperDeploymentLink}`);
-
-  qrcode.generate(tonkeeperDeploymentLink, { small: true }, (code) => {
-    console.log(code);
-  });
+export async function run(provider: NetworkProvider) {
+  const myContract = MainContract.createFromConfig(
+    {
+      number: 0,
+      address: address("0QBQdE0Z-rASCXmRWi7ISN0We3guW0WuIbu40bpG_lx12nda"),
+      owner_address: address("0QBQdE0Z-rASCXmRWi7ISN0We3guW0WuIbu40bpG_lx12nda"),
+    },
+    await compile("MainContract"),
+  )
+  
+  const openedContract = provider.open(myContract);
+  openedContract.sendDeploy(provider.sender(), toNano(0.05));
+  await provider.waitForDeploy(myContract.address);
 }
-
-deployScript();

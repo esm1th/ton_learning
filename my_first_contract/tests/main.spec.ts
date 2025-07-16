@@ -3,18 +3,23 @@ import { hex } from "../build/main.compile.json";
 import { Blockchain, SandboxContract, TreasuryContract } from "@ton/sandbox";
 import { MainContract } from "../wrappers/MainContract";
 import "@ton/test-utils";
+import { compile } from "@ton/blueprint";
 
 describe("main.fc contract tests", () => {
   let blockchain: Blockchain;
   let myContract: SandboxContract<MainContract>;
   let initWallet: SandboxContract<TreasuryContract>;
   let ownerWallet: SandboxContract<TreasuryContract>;
+  let codeCell: Cell;
+  
+  beforeAll(async () => { 
+    codeCell = await compile("MainContract");
+  });
 
   beforeEach(async () => { 
     blockchain = await Blockchain.create();
     initWallet = await blockchain.treasury("initAddress");
     ownerWallet = await blockchain.treasury("ownerAddress");
-    const codeCell = Cell.fromBoc(Buffer.from(hex, "hex"))[0];
 
     myContract = blockchain.openContract(
       MainContract.createFromConfig(
