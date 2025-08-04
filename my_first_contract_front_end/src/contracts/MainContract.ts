@@ -2,14 +2,16 @@ import {
   Address,
   beginCell,
   Cell,
-  Contract,
+  type Contract,
   contractAddress,
-  ContractProvider,
-  Sender,
+  type ContractProvider,
+  type Sender,
   SendMode,
 } from "@ton/core";
 
-export type MainContractConfig = {
+export const contractTestnetAddress = "kQBQdE0Z-rASCXmRWi7ISN0We3guW0WuIbu40bpG_lx12iqf";
+
+export interface MainContractConfig {
   number: number;
   address: Address;
   owner_address: Address;
@@ -24,10 +26,16 @@ export function mainContractConfigToCell(config: MainContractConfig) {
 }
 
 export class MainContract implements Contract {
+  readonly address: Address;
+  readonly init?: { code: Cell; data: Cell };
+
   constructor(
-    readonly address: Address,
-    readonly init?: { code: Cell; data: Cell },
-  ) {}
+    address: Address,
+    init?: { code: Cell; data: Cell },
+  ) {
+    this.address = address;
+    this.init = init;
+  }
 
   static createFromConfig(
     config: MainContractConfig,
@@ -52,7 +60,6 @@ export class MainContract implements Contract {
     provider: ContractProvider,
     sender: Sender,
     value: bigint,
-    increment_by: number,
   ) {
     const msg_body = beginCell()
       .storeUint(1, 32) // OP code
@@ -77,37 +84,43 @@ export class MainContract implements Contract {
   async getBalance(provider: ContractProvider) {
     const { stack } = await provider.get("balance", []);
     return {
-      balance: stack.readNumber(),
-    }
+      balance: stack.readNumber() / 1e9,
+    };
   }
 
   async sendDeposit(provider: ContractProvider, sender: Sender, value: bigint) {
     const msg_body = beginCell()
-      .storeUint(2, 32)  // OP code for deposit
+      .storeUint(2, 32) // OP code for deposit
       .endCell();
     await provider.internal(sender, {
       value,
       sendMode: SendMode.PAY_GAS_SEPARATELY,
       body: msg_body,
-    })
+    });
   }
-  
-  async sendNoOpCodeDeposit(provider: ContractProvider, sender: Sender, value: bigint) {
+
+  async sendNoOpCodeDeposit(
+    provider: ContractProvider,
+    sender: Sender,
+    value: bigint,
+  ) {
     await provider.internal(sender, {
       value,
       sendMode: SendMode.PAY_GAS_SEPARATELY,
       body: beginCell().endCell(),
-    })
+    });
   }
 
-  async sendWithdrawalRequest(provider: ContractProvider, sender: Sender, value: bigint, amount: bigint) {
+  async sendWithdrawalRequest(
+    provider: ContractProvider,
+    sender: Sender,
+    value: bigint,
+    amount: bigint,
+  ) {
     await provider.internal(sender, {
       value,
       sendMode: SendMode.PAY_GAS_SEPARATELY,
-      body: beginCell()
-        .storeUint(3, 32)
-        .storeCoins(amount)
-        .endCell(),
-    })
+      body: beginCell().storeUint(3, 32).storeCoins(amount).endCell(),
+    });
   }
 }
