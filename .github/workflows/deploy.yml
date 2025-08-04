@@ -30,11 +30,11 @@ jobs:
           echo "Current directory: $(pwd)"
           ls -la  # Optional: List files in the directory
     
-      - name: Setup Node with yarn cache
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16
-          cache: yarn
+      # - name: Setup Node with yarn cache
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
+      #     cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
