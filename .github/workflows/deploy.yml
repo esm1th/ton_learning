@@ -22,6 +22,11 @@ jobs:
       - name: Setup yarn
         run: npm install -g yarn
 
+      - name: Debug working directory
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -la  # Optional: List files in the directory
+    
       - name: Setup Node with yarn cache
         uses: actions/setup-node@v4
         with:
