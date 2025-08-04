@@ -4,7 +4,7 @@ import { useMainContract } from "./hooks/useMainContract";
 import { useTonConnect } from "./hooks/useTonConnect";
 
 function App() {
-  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+  const contractAddress = "kQBDThipEH9RCl3Y-G6ReaUJFprWg6YpxVN2wcVOiLLt1w6z";
 
   if (!contractAddress) {
     throw new Error("VITE_CONTRACT_ADDRESS environment variable is not set");
