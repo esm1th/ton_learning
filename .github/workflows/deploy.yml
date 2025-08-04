@@ -29,7 +29,6 @@ jobs:
           cache: yarn
 
       - name: Install dependencies
-      - name: Install dependencies
         run: |
           cd ./my_first_contract_frontend
           yarn install --frozen-lockfile
