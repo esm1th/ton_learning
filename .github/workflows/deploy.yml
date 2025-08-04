@@ -30,6 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          ls -la
           cd ./my_first_contract_frontend
           yarn install --frozen-lockfile
 
