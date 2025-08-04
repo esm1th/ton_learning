@@ -19,8 +19,17 @@ jobs:
         with:
           node-version: 16
 
+      - name: Setup yarn
+        run: npm install -g yarn
+
+      - name: Setup Node with yarn cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: yarn
+
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        run: yarn
 
       - name: Build project
         run: npm run build
