@@ -30,17 +30,16 @@ jobs:
           echo "Current directory: $(pwd)"
           ls -la  # Optional: List files in the directory
     
-      # - name: Setup Node with yarn cache
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 22
-      #     cache: yarn
-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build project
         run: npm run build
+      
+      - name: Debug after build
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -la  # Optional: List files in the directory
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
