@@ -6,7 +6,7 @@ import path from 'path';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), nodePolyfills()],
-  base: "/ton_learning/my_first_contract_frontend/",
+  base: "/my_first_contract_front_end/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
