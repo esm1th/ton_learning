@@ -4,12 +4,14 @@
   "license": "MIT",
   "devDependencies": {
     "@swc/core": "^1.12.9",
+    "@tact-lang/compiler": "^1.6.13",
     "@ton-community/func-js": "^0.10.0",
     "@ton/blueprint": "^0.38.0",
     "@ton/core": "^0.61.0",
     "@ton/crypto": "^3.3.0",
     "@ton/sandbox": "^0.34.0",
     "@ton/test-utils": "^0.8.0",
+    "@ton/tolk-js": "^1.0.0",
     "@ton/ton": "^15.3.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.10",
@@ -23,12 +25,7 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "compile": "ts-node ./scripts/compile.ts",
-    "test": "yarn compile && yarn jest",
-    "onchaintest": "TESTNET=true ts-node ./tests/onchain.ts",
-    "onchaintest:mainnet": "ts-node ./tests/onchain.ts",
-    "deploy": "yarn compile && TESTNET=true ts-node ./scripts/deploy.ts",
-    "deploy:mainnet": "yarn compile && ts-node ./scripts/deploy.ts"
+    "test": "yarn jest"
   },
   "dependencies": {
     "@orbs-network/ton-access": "^2.3.3",
