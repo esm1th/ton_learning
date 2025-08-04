@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./ton_learning/my_first_contract_front_end
+        working-directory: ./my_first_contract_front_end
 
     steps:
       - name: Checkout repo
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./ton_learning/my_first_contract_front_end
+        working-directory: ./my_first_contract_front_end
     if: github.ref == 'refs/heads/master'
 
     steps:
