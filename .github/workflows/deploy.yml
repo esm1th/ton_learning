@@ -9,6 +9,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ton_learning/my_first_contract_front_end
 
     steps:
       - name: Checkout repo
@@ -32,26 +35,26 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-          cache-dependency-path: "./my_first_contract_front_end/yarn.lock"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build project
-        run: |
-          cd ./my_first_contract_front_end
-          npm run build
+        run: npm run build
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
         with:
           name: production-files
-          path: ./my_first_contract_front_end/dist
+          path: ./dist
 
   deploy:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ton_learning/my_first_contract_front_end
     if: github.ref == 'refs/heads/master'
 
     steps:
@@ -59,10 +62,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: production-files
-          path: ./my_first_contract_front_end/dist
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./my_first_contract_front_end/dist
+          publish_dir: ./dist
