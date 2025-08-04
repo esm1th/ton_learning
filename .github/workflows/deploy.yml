@@ -52,14 +52,14 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     defaults:
       run:
         working-directory: ./my_first_contract_front_end
-    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: production-files
           path: ./dist
