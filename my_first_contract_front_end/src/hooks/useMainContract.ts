@@ -1,51 +1,65 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTonClient } from "./useTonClient";
-import { useAsyncInitialize } from "./useAsyncInitialize";
 import { useTonConnect } from "./useTonConnect";
 import { MainContract } from "../contracts/MainContract";
-import { Address, toNano } from "@ton/core";
+import { Address, toNano, type OpenedContract } from "@ton/core";
+
+interface MainContractData {
+  contract_address: string;
+  counter_value: number;
+  recent_sender: Address;
+  owner_address: Address;
+  balance: number;
+}
 
 export function useMainContract(address: string) {
   const client = useTonClient();
   const { sender } = useTonConnect();
-  const [ contractData, setContractData ] = useState<null | {
-    counter_value: number;
-    recent_sender: Address;
-    owner_address: Address;
-    balance: number;
-  }>();
 
-  const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time))
+  const [mainContract, setMainContract] = useState<OpenedContract<MainContract> | null>(null);
+  const [ contractData, setContractData ] = useState<MainContractData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const mainContract = useAsyncInitialize(() => {
-    if (!client) return Promise.resolve(undefined);
-    const contract = new MainContract(Address.parse(address));
-    return Promise.resolve(client.open(contract));
-  }, [client]);
+  const fetchContractData = async () => {
+    if (client) {
+      setIsLoading(true);
+      try {
+        const parsedAddress = Address.parse(address);
+        const contract = new MainContract(parsedAddress);
+        
+        console.log(`Fetching contract data ${parsedAddress.toString()} | ${address} ...`);
   
-  useEffect(() => {
-    async function getValue() {
-      if (!mainContract) return;
-      setContractData(null);
-      const { number, recent_sender, owner_address } = await mainContract.getData();
-      const { balance } = await mainContract.getBalance();
-      setContractData({ 
-        counter_value: number,
-        recent_sender: recent_sender,
-        owner_address: owner_address,
-        balance: balance
-      });
-      await sleep(5000);  // sleep 5 seconds and poll values again
-      void getValue();
+        const openedContract = client.open(contract);
+        setMainContract(openedContract)
+        
+        const { number, recent_sender, owner_address } = await openedContract.getData();
+        const { balance } = await openedContract.getBalance();
+  
+        setContractData({
+          contract_address: openedContract.address.toString(),
+          counter_value: number,
+          recent_sender: recent_sender,
+          owner_address: owner_address,
+          balance: balance
+        });
+      } catch (error) {
+        console.error("Failed to fetch contract data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    void getValue();
-  }, [mainContract]);
+  }
+  
+  const sendIncrement = async () => {
+    if (mainContract) {
+      return mainContract.sendIncrement(sender, toNano("0.05"))
+    }
+  }
   
   return {
-    contract_address: mainContract?.address.toString(),
     ...contractData,
-    sendIncrement: () => {
-      return mainContract?.sendIncrement(sender, toNano("0.05"))
-    }
+    fetchContractData,
+    sendIncrement,
+    isLoading,
   }
 }
