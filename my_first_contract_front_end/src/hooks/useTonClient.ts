@@ -2,7 +2,7 @@ import { getHttpEndpoint } from "@orbs-network/ton-access";
 import { TonClient } from "@ton/ton";
 import { useAsyncInitialize } from "./useAsyncInitialize";
 
-export function useTonClient(): TonClient {
+export function useTonClient(): TonClient | undefined {
   const client = useAsyncInitialize<TonClient | undefined>(async (): Promise<TonClient | undefined> => {
     try {
       const endpoint = await getHttpEndpoint({ network: "testnet" });
@@ -14,10 +14,5 @@ export function useTonClient(): TonClient {
       return undefined;
     }
   });
-  
-  if (!client) {
-    throw new Error("TonClient initialization failed");
-  }
-
   return client;
 }

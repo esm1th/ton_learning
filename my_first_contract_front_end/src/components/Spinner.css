@@ -1,0 +1,22 @@
+.spinner {
+  display: inline-flex; /* Better alignment */
+  align-items: center; /* Vertically center */
+  justify-content: center; /* Horizontally center */
+  max-height: 24px;
+  height: 24px; /* Force exact height of .Hint */
+  width: 24px; /* Match height for square aspect */
+  line-height: 1.5;
+}
+
+.spinner-inner {
+  width: 12px; /* Slightly smaller than container */
+  height: 12px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #6200ee;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

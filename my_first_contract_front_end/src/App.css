@@ -40,3 +40,14 @@
 .read-the-docs {
   color: #888;
 }
+
+.ton-connect-button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.Hint {
+  height: 24px;
+  font-size: 16px;
+  line-height: 1.5; /* 24px if font-size is 16px */
+}
