@@ -4,6 +4,7 @@ import { TonConnectButton } from "@tonconnect/ui-react";
 import { useMainContract } from "./hooks/useMainContract";
 import { useTonConnect } from "./hooks/useTonConnect";
 import { Spinner } from "./components/Spinner";
+import WebApp from "@twa-dev/sdk";
 
 function App() {
   const contractAddress = "kQBDThipEH9RCl3Y-G6ReaUJFprWg6YpxVN2wcVOiLLt1w6z";
@@ -35,6 +36,14 @@ function App() {
     return () => clearInterval(intervalId);
   }, [contractAddress, fetchContractData]);
 
+  const isTgPlatform = WebApp.platform !== "unknown";
+
+  const showAlert = (): void => {
+    if (isTgPlatform) {
+      WebApp.showAlert("Hey there!");
+    }
+  };
+
   return (
     <div>
       <div className="ton-connect-button-wrapper">
@@ -43,6 +52,7 @@ function App() {
 
       <div>
         <div className="Card">
+          <b>Platform: {WebApp.platform}</b>
           <b>Our contract address</b>
           <div className="Hint">
             {isLoading ? <Spinner /> : contract_address?.slice(0, 30) + "..."}
@@ -71,6 +81,20 @@ function App() {
           <b>Counter value</b>
           <div className="Hint">{isLoading ? <Spinner /> : counter_value}</div>
         </div>
+
+        {isTgPlatform && (
+          <div>
+            <a
+              onClick={() => {
+                void showAlert();
+              }}
+            >
+              Show Alert
+            </a>
+            <br />
+          </div>
+        )}
+
         {connected && (
           <a
             onClick={() => {
